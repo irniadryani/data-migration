@@ -1,0 +1,8 @@
+
+archive/
+files/
+logs/
+jobs/logs/
+*.log
+__pycache__/
+

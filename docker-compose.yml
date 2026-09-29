@@ -1,0 +1,126 @@
+# version: '3.8'
+
+networks:
+  pipeline-net:
+    driver: bridge
+
+services:
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:v23.3.11
+    container_name: redpanda
+    command:
+      - redpanda start
+      - --smp 1
+      - --memory 1G
+      - --reserve-memory 0M
+      - --overprovisioned
+      - --node-id 0
+      - --kafka-addr PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
+      - --advertise-kafka-addr PLAINTEXT://redpanda:29092,OUTSIDE://localhost:9092
+    networks:
+      - pipeline-net
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+  
+  redpanda-console:
+    image: docker.redpanda.com/redpandadata/console:v2.3.8
+    container_name: redpanda_console 
+    networks:
+      - pipeline-net
+    environment:
+      KAFKA_BROKERS: "redpanda:29092"
+    ports:
+      - "8080:8080"     # Web UI Redpanda: http://localhost:8080
+    depends_on:
+      - redpanda
+
+  nifi:
+    image: apache/nifi:latest
+    container_name: nifi
+    networks:
+      - pipeline-net
+    ports:
+      - "8443:8443"
+    environment:
+      - SINGLE_USER_CREDENTIALS_USERNAME=admin
+      - SINGLE_USER_CREDENTIALS_PASSWORD=adminpassword123
+    volumes:
+      - nifi_conf:/opt/nifi/nifi-current/conf
+      - nifi_database_repository:/opt/nifi/nifi-current/database_repository
+      - nifi_flowfile_repository:/opt/nifi/nifi-current/flowfile_repository
+      - nifi_content_repository:/opt/nifi/nifi-current/content_repository
+      - nifi_provenance_repository:/opt/nifi/nifi-current/provenance_repository
+      - ./data_in:/opt/nifi/data_in
+      - nifi_state:/opt/nifi/nifi-current/state
+  
+  flink-jobmanager:
+    build:
+      context: .
+      dockerfile: Dockerfile.flink
+    image: flink:1.17
+    container_name: flink-jobmanager
+    user: root
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        apt-get update && apt-get install -y python3 python3-pip python-is-python3
+        pip3 install apache-flink==1.17.0 psycopg2-binary kafka-python
+        /docker-entrypoint.sh jobmanager
+    networks:
+      - pipeline-net
+    ports:
+      - "8081:8081"
+    environment:
+      FLINK_PROPERTIES: |
+        jobmanager.rpc.address: flink-jobmanager
+    volumes:
+      - ./jobs:/opt/flink/jobs
+      - ./usrlib:/opt/flink/usrlib
+
+  flink-taskmanager:
+    build:
+      context: .
+      dockerfile: Dockerfile.flink
+    image: flink:1.17
+    user: root
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        apt-get update && apt-get install -y python3 python3-pip 
+        pip3 install apache-flink==1.17.0 psycopg2-binary kafka-python
+        /docker-entrypoint.sh taskmanager
+    networks:
+      - pipeline-net
+    depends_on:
+      - flink-jobmanager
+    environment:
+      FLINK_PROPERTIES: |
+        jobmanager.rpc.address: flink-jobmanager
+        taskmanager.numberOfTaskSlots: 4
+    volumes:
+      - ./jobs:/opt/flink/jobs
+      - ./usrlib:/opt/flink/usrlib
+
+  postgres_new_db:
+    image: postgres:15
+    container_name: postgres_new_db
+    networks:
+      - pipeline-net
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: migrate_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+  nifi_conf:
+  nifi_database_repository:
+  nifi_flowfile_repository:
+  nifi_content_repository:
+  nifi_provenance_repository:
+  nifi_state:
