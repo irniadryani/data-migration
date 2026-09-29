@@ -1,0 +1,13 @@
+timestamp;topic_name;odoo_model;document_ref;error_reason;raw_payload_json
+2026-09-10 10:32:32;res_partner;res.partner;UNKNOWN;Field 'General': 'Contacts require a name';"{""name"": null, ""email"": ""test@gmail.com"", ""phone"": ""085798118457"", ""city"": ""Bandung""}"
+2026-09-10 10:32:32;res_partner;res.partner;UNKNOWN;Field 'General': 'Contacts require a name';"{""name"": null, ""email"": ""test@gmail.com"", ""phone"": ""085798118457"", ""city"": ""Bandung""}"
+2026-09-10 10:47:15;res_partner;res.partner;UNKNOWN;Field 'name' kosong/null (Wajib diisi);"{""name"": null, ""email"": ""test@gmail.com"", ""phone"": ""085798118457"", ""city"": ""Bandung""}"
+2026-09-10 10:56:06;res_partner;res.partner;UNKNOWN;Field 'name' kosong/null (Wajib diisi);"{""name"": null, ""email"": ""test@gmail.com"", ""phone"": ""085798118457"", ""city"": ""Bandung""}"
+tes2026-09-10 11:36:49;master_vendor;UNKNOWN;UNKNOWN;Unmapped;"{""Name"": ""Vendor A""}"
+2026-09-10 11:38:44;res_partner;res.partner;UNKNOWN;Field 'name' kosong/null (Wajib diisi);"{""name"": null, ""email"": ""test@gmail.com"", ""phone"": ""085798118457"", ""city"": ""Bandung""}"
+2026-09-10 11:45:58;master_customer;res.partner;UNKNOWN;Field 'General': 'Contacts require a name';"{""Customer Code"": ""CUST001"", ""Customer Name"": ""PT Maju Jaya"", ""email"": ""maju.jaya@example.com"", ""phone"": ""021-5551001"", ""city"": ""Jakarta""}"
+2026-09-10 11:45:58;master_customer;res.partner;UNKNOWN;Field 'General': 'Contacts require a name';"{""Customer Code"": ""CUST002"", ""Customer Name"": ""CV Sinar Abadi"", ""email"": ""sinar.abadi@example.com"", ""phone"": ""022-5551002"", ""city"": ""Bandung""}"
+2026-09-10 11:45:58;master_customer;res.partner;UNKNOWN;Field 'General': 'Contacts require a name';"{""Customer Code"": ""CUST003"", ""Customer Name"": ""PT Nusantara Makmur"", ""email"": ""nusantara.makmur@example.com"", ""phone"": ""031-5551003"", ""city"": ""Surabaya""}"
+2026-09-10 11:45:58;master_customer;res.partner;UNKNOWN;Field 'General': 'Contacts require a name';"{""Customer Code"": ""CUST004"", ""Customer Name"": ""PT Berkah Sentosa"", ""email"": ""berkah.sentosa@example.com"", ""phone"": ""024-5551004"", ""city"": ""Semarang""}"
+2026-09-10 11:45:58;master_customer;res.partner;UNKNOWN;Field 'General': 'Contacts require a name';"{""Customer Code"": ""CUST005"", ""Customer Name"": ""CV Prima Sejahtera"", ""email"": ""prima.sejahtera@example.com"", ""phone"": ""0274-5551005"", ""city"": ""Yogyakarta""}"
+2026-09-10 11:45:58;master_customer;res.partner;UNKNOWN;Field 'General': 'Contacts require a name';"{""Customer Code"": ""CUST006"", ""Customer Name"": ""PT Cipta Karya"", ""email"": ""cipta.karya@example.com"", ""phone"": ""061-5551006"", ""city"": ""Medan""}"
